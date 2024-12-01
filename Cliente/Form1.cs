@@ -31,8 +31,14 @@ namespace Cliente
             }
             finally 
             {
-                flujo?.Close();
-                remoto?.Close();
+                //flujo?.Close();
+                //remoto?.Close();
+                if (remoto == null || !remoto.Connected)
+                {
+                    flujo?.Close();
+                    remoto?.Close();
+                    MessageBox.Show("No se pudo establecer conexión", "ERROR");
+                }
             }
 
             panPlaca.Enabled = false;
@@ -88,11 +94,18 @@ namespace Cliente
 
         private Respuesta HazOperacion(Pedido pedido)
         {
-            if(flujo == null)
+            //if(flujo == null)
+            //{
+            //    MessageBox.Show("No hay conexión", "ERROR");
+            //    return null;
+            //}
+
+            if (flujo == null || !remoto.Connected)
             {
-                MessageBox.Show("No hay conexión", "ERROR");
+                MessageBox.Show("No hay conexión disponible", "ERROR");
                 return null;
             }
+
             try
             {
                 byte[] bufferTx = Encoding.UTF8.GetBytes(
@@ -119,11 +132,11 @@ namespace Cliente
                 MessageBox.Show("Error al intentar transmitir " + ex.Message,
                     "ERROR");
             }
-            finally 
-            {
-                flujo?.Close();
-                remoto?.Close();
-            }
+            //finally ---- Cambio
+            //{
+            //    flujo?.Close();
+            //    remoto?.Close();
+            //}
             return null;
         }
 
