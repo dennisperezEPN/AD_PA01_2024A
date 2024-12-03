@@ -62,27 +62,31 @@ namespace Cliente
                 return;
             }
 
-            Pedido pedido = new Pedido
-            {
-                Comando = "INGRESO",
-                Parametros = new[] { usuario, contraseña }
-            };
-            
-            Respuesta respuesta = HazOperacion(pedido);
+            //Pedido pedido = new Pedido
+            //{
+            //    Comando = "INGRESO",
+            //    Parametros = new[] { usuario, contraseña }
+            //};
+
+            ProtocoloData pedido = ProtocoloData.CrearConPedido("INGRESO", new[] { usuario, contraseña });
+
+
+            ProtocoloData respuesta = new ProtocoloData();
+            respuesta.Respuesta = HazOperacion(pedido.Pedido);
             if (respuesta == null)
             {
                 MessageBox.Show("Hubo un error", "ERROR");
                 return;
             }
 
-            if (respuesta.Estado == "OK" && respuesta.Mensaje == "ACCESO_CONCEDIDO")
+            if (respuesta.Respuesta.Estado == "OK" && respuesta.Respuesta.Mensaje == "ACCESO_CONCEDIDO")
             {
                 panPlaca.Enabled = true;
                 panLogin.Enabled = false;
                 MessageBox.Show("Acceso concedido", "INFORMACIÓN");
                 txtModelo.Focus();
             }
-            else if (respuesta.Estado == "NOK" && respuesta.Mensaje == "ACCESO_NEGADO")
+            else if (respuesta.Respuesta.Estado == "NOK" && respuesta.Respuesta.Mensaje == "ACCESO_NEGADO")
             {
                 panPlaca.Enabled = false;
                 panLogin.Enabled = true;
